@@ -5,15 +5,11 @@ import numpy as np
 
 env = gym.make('FrozenLake-v0')
 
-print(env.action_space)
-print(env.observation_space)
-# print(gym.envs.registry.all())
-
 Q = np.zeros([env.observation_space.n, env.action_space.n])
 # Set learning parameters
 lr = .85
 y = .99
-num_episodes = 2000
+num_episodes = 20000
 
 # create lists to contain total rewards and steps per episode
 rList = []
@@ -28,12 +24,12 @@ for attempt in range(num_episodes):
     while step < 99:
         step += 1
         # Choose an action by greedily (with noise) picking from Q table
-        a = (np.argmax(Q[s, :] +
-            np.random.randn(1, env.action_space.n) * (1 ./ (attempt + 1))))
+        action = (np.argmax(Q[s, :] +
+            np.random.randn(1, env.action_space.n) * (1./(attempt + 1))))
         # Get new state and reward from environment
-        observation, reward, done, _ = env.step(a)
+        observation, reward, done, _ = env.step(action)
         # Update Q-Table with new knowledge
-        Q[s, a] = Q[s, a] + lr * (reward + y * np.max(Q[observation, :]) - Q[s, a])
+        Q[s, action] = Q[s, action] + lr * (reward + y * np.max(Q[observation, :]) - Q[s, action])
 
         rAll += reward
         s = observation
