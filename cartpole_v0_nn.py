@@ -1,3 +1,5 @@
+# https://medium.com/@awjuliani/super-simple-reinforcement-learning-tutorial-part-2-ded33892c724
+
 import gym
 import numpy as np
 import tensorflow as tf
@@ -5,54 +7,145 @@ import tensorflow as tf
 env = gym.make('CartPole-v0')
 tf.reset_default_graph()
 
-#These lines establish the feed-forward part of the network used to choose actions
-inputs1 = tf.placeholder(shape = [1, 4], dtype = tf.float32)
-W = tf.Variable(tf.random_uniform([4, 2], 0, 0.01))
-Qout = tf.matmul(inputs1, W)
-predict = tf.argmax(Qout, 1)
+# hyperparameters
+num_hidden_layers = 10  # number of hidden layer neurons
+batch_size = 5  # every how many episodes to do a param update?
+learning_rate = 2e-2  # feel free to play with this to train faster or more stably.
+gamma = 0.99  # discount factor for reward
+input_dim = 4  # input dimensionality
 
-#Below we obtain the loss by taking the sum of squares difference between the target and prediction Q values.
-nextQ = tf.placeholder(shape = [1, 2], dtype = tf.float32)
-loss = tf.reduce_sum(tf.square(nextQ - Qout))
-trainer = tf.train.GradientDescentOptimizer(learning_rate = 0.15)
-updateModel = trainer.minimize(loss)
 
+tf.reset_default_graph()
+
+# This defines the network as it goes from taking an observation of
+# the environment to
+# giving a probability of chosing to the action of moving left or right.
+observations = tf.placeholder(tf.float32, [None, input_dim], name="input_x")
+W1 = tf.get_variable("W1", shape=[input_dim, num_hidden_layers],
+                     initializer=tf.contrib.layers.xavier_initializer())
+layer1 = tf.nn.relu(tf.matmul(observations, W1))
+W2 = tf.get_variable("W2", shape=[num_hidden_layers, 1],
+                     initializer=tf.contrib.layers.xavier_initializer())
+score = tf.matmul(layer1, W2)
+probability = tf.nn.sigmoid(score)
+
+# From here we define the parts of the network needed for
+# learning a good policy.
+tvars = tf.trainable_variables()
+input_y = tf.placeholder(tf.float32, [None, 1], name="input_y")
+advantages = tf.placeholder(tf.float32, name="reward_signal")
+
+# The loss function. This sends the weights in the
+# direction of making actions
+# that gave good advantage (reward over time) more likely,
+# and actions that didn't less likely.
+loglik = tf.log(input_y * (input_y - probability) +
+                (1 - input_y) * (input_y + probability))
+loss = -tf.reduce_mean(loglik * advantages)
+newGrads = tf.gradients(loss, tvars)
+
+# Once we have collected a series of gradients from
+# multiple episodes, we apply them.
+# We don't just apply gradeients after every episode in order
+# to account for noise in the reward signal.
+adam = tf.train.AdamOptimizer(learning_rate=learning_rate)  # Our optimizer
+W1Grad = tf.placeholder(tf.float32, name="batch_grad1")  # Placeholders to send the final gradients through when we update.
+W2Grad = tf.placeholder(tf.float32, name="batch_grad2")
+batchGrad = [W1Grad, W2Grad]
+updateGrads = adam.apply_gradients(zip(batchGrad, tvars))
+
+xs, hs, dlogps, reward_list, ys, tfps = [], [], [], [], [], []
+running_reward = None
+reward_sum = 0
+episode_number = 1
+total_episodes = 10000
 init = tf.initialize_all_variables()
 
-# Set learning parameters
-randomness_probability = 0.10
-num_episodes = 300
-max_time = 300
 
-# create lists to contain total rewards and steps per episode
-jList = []
-rList = []
+def discount_rewards(reward_array):
+    """ take 1D float array of rewards and compute discounted reward """
+    discounted_r = np.zeros_like(reward_array)
+    running_add = 0
+    for t in reversed(xrange(0, reward_array.size)):
+        running_add = running_add * gamma + reward_array[t]
+        discounted_r[t] = running_add
+    return discounted_r
+
+
+# Launch the graph
 with tf.Session() as sess:
+    rendering = True
     sess.run(init)
-    for i_episode in range(num_episodes):
-        observation = env.reset()
-        rAll = 0
-        done = False
-        current_step = 0
+    observation = env.reset()
 
-        while current_step < max_time:
-            current_step += 1
+    # Reset the gradient placeholder. We will collect gradients in
+    # gradBuffer until we are ready to update our policy network.
+    gradBuffer = sess.run(tvars)
+    for ix, grad in enumerate(gradBuffer):
+        gradBuffer[ix] = grad * 0
 
-            input = np.reshape(observation, (1, 4))
-            # Choose an action by greedily (with randomness_probability chance
-            # of random action) from the Q-network
-            action, allQ = sess.run([predict, Qout],
-                                    feed_dict={inputs1: input})
-            if np.random.rand(1) < randomness_probability:
-                action[0] = env.action_space.sample()
-
-            # Get new state and reward from environment
-            observation, reward, done, _ = env.step(action[0])
+    while episode_number <= total_episodes:
+        # Rendering the environment slows things down,
+        # so let's only look at it once our agent is doing a good job.
+        if reward_sum / batch_size > 150 or rendering is True :
             env.render()
+            rendering = False
 
-            if done:
-                print("Episode finished after {} timesteps".format(
-                    current_step + 1))
-                # Reduce chance of random action as we train the model.
-                randomness_probability = 1./((current_step/25) + 10)
-                break
+        # Make sure the observation is in a shape the network can handle.
+        x = np.reshape(observation, [1, input_dim])
+
+        # Run the policy network and get an action to take.
+        tfprob = sess.run(probability, feed_dict={observations: x})
+        action = 1 if np.random.uniform() < tfprob else 0
+
+        xs.append(x)  # observation
+        y = 1 if action == 0 else 0  # a "fake label"
+        ys.append(y)
+
+        # step the environment and get new measurements
+        observation, reward, done, info = env.step(action)
+        reward_sum += reward
+
+        reward_list.append(reward)  # record reward (has to be done after we call step() to get reward for previous action)
+
+        if done:
+            episode_number += 1
+            # stack together all inputs, hidden states, action gradients, and rewards for this episode
+            epx = np.vstack(xs)
+            epy = np.vstack(ys)
+            epr = np.vstack(reward_list)
+            tfp = tfps
+            xs, hs, dlogps, reward_list, ys, tfps = [], [], [], [], [], []
+
+            # compute the discounted reward backwards through time
+            discounted_epr = discount_rewards(epr)
+            # size the rewards to be unit normal (helps control the gradient estimator variance)
+            discounted_epr -= np.mean(discounted_epr)
+            discounted_epr /= np.std(discounted_epr)
+
+            # Get the gradient for this episode, and save it in the gradBuffer
+            tGrad = sess.run(newGrads,
+                             feed_dict={observations: epx, input_y: epy, advantages: discounted_epr})
+            for ix, grad in enumerate(tGrad):
+                gradBuffer[ix] += grad
+
+            # If we have completed enough episodes, then update the policy network with our gradients.
+            if episode_number % batch_size == 0:
+                sess.run(updateGrads,
+                         feed_dict={W1Grad: gradBuffer[0], W2Grad:gradBuffer[1]})
+                for ix, grad in enumerate(gradBuffer):
+                    gradBuffer[ix] = grad * 0
+
+                # Give a summary of how well our network is doing for each batch of episodes.
+                running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
+                print 'Average reward for episode %f.  Total average reward %f.' % (reward_sum/batch_size, running_reward/batch_size)
+
+                if reward_sum/batch_size > 200: 
+                    print "Task solved in",episode_number,'episodes!'
+                    break
+
+                reward_sum = 0
+
+            observation = env.reset()
+
+print episode_number, 'Episodes completed.'
