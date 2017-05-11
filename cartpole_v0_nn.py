@@ -14,14 +14,14 @@ predict = tf.argmax(Qout, 1)
 #Below we obtain the loss by taking the sum of squares difference between the target and prediction Q values.
 nextQ = tf.placeholder(shape = [1, 2], dtype = tf.float32)
 loss = tf.reduce_sum(tf.square(nextQ - Qout))
-trainer = tf.train.AdamOptimizer(learning_rate = 0.01)
+trainer = tf.train.GradientDescentOptimizer(learning_rate = 0.15)
 updateModel = trainer.minimize(loss)
 
 init = tf.initialize_all_variables()
 
 # Set learning parameters
-randomness_probability = 0.1
-num_episodes = 50
+randomness_probability = 0.10
+num_episodes = 300
 max_time = 300
 
 # create lists to contain total rewards and steps per episode
@@ -37,7 +37,7 @@ with tf.Session() as sess:
 
         while current_step < max_time:
             current_step += 1
-            
+
             input = np.reshape(observation, (1, 4))
             # Choose an action by greedily (with randomness_probability chance
             # of random action) from the Q-network
@@ -53,4 +53,6 @@ with tf.Session() as sess:
             if done:
                 print("Episode finished after {} timesteps".format(
                     current_step + 1))
+                # Reduce chance of random action as we train the model.
+                randomness_probability = 1./((current_step/25) + 10)
                 break
