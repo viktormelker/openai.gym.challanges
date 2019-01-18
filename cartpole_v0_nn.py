@@ -66,7 +66,7 @@ def discount_rewards(reward_array):
     """ take 1D float array of rewards and compute discounted reward """
     discounted_r = np.zeros_like(reward_array)
     running_add = 0
-    for t in reversed(xrange(0, reward_array.size)):
+    for t in reversed(range(0, reward_array.size)):
         running_add = running_add * gamma + reward_array[t]
         discounted_r[t] = running_add
     return discounted_r
@@ -138,14 +138,14 @@ with tf.Session() as sess:
 
                 # Give a summary of how well our network is doing for each batch of episodes.
                 running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
-                print 'Average reward for episode %f.  Total average reward %f.' % (reward_sum/batch_size, running_reward/batch_size)
+                print(f'Average reward for episode {reward_sum/batch_size}.  Total average reward {running_reward/batch_size}.')
 
-                if reward_sum/batch_size > 200: 
-                    print "Task solved in",episode_number,'episodes!'
+                if reward_sum/batch_size > 200:
+                    print( "Task solved in" + episode_number + 'episodes!')
                     break
 
                 reward_sum = 0
 
             observation = env.reset()
 
-print episode_number, 'Episodes completed.'
+print(f'{episode_number} Episodes completed.')
