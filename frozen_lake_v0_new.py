@@ -43,15 +43,12 @@ for episode in range(num_episodes):
     states = []
     actions = []
     for i in range(max_steps):
-        # print(f'Running step {i}')
         #env.render()
 
-        # print(f'Observation: {observation}')
         states.append(observation)
 
         action = policy.get_action(observation)
         actions.append(action)
-        # print(f'Taking action {action}')
 
         observation, reward, done, info = env.step(action)
 
@@ -61,7 +58,5 @@ for episode in range(num_episodes):
             print(f'Game finished with total reward {total_reward}')
             policy.update(states, actions, total_reward)
             break
-
-        #print(f'The total reward is {total_reward}')
 
 print(policy.action_probabilities)
