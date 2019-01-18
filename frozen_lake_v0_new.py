@@ -1,5 +1,6 @@
 import gym
 import numpy as np
+from collections import deque
 
 env = gym.make('FrozenLake-v0')
 
@@ -7,14 +8,11 @@ env = gym.make('FrozenLake-v0')
 class Policy:
     num_actions = env.action_space.n
     num_states = env.observation_space.n
-    learning_rate = 0.1
+    learning_rate = 0.05
 
     action_probabilities = np.array(16 * [4 * [0.25]])
 
     def update(self, states, actions, reward):
-        if reward == 0:
-            reward = -1
-
         for state, action in zip(states, actions):
             self.action_probabilities[state, action] += max(0, (
                 self.learning_rate * reward
@@ -32,8 +30,9 @@ class Policy:
 
 num_episodes = 5000
 max_steps = 100
-
-discount_factor = 0.95
+discount_factor = 1
+reward_queue = deque(maxlen=50)
+time_reward = -0.02
 
 policy = Policy()
 
@@ -51,12 +50,14 @@ for episode in range(num_episodes):
         actions.append(action)
 
         observation, reward, done, info = env.step(action)
+        reward += time_reward
 
         total_reward = total_reward * discount_factor + reward
 
         if done is True:
-            print(f'Game finished with total reward {total_reward}')
             policy.update(states, actions, total_reward)
+            reward_queue.append(total_reward)
+            print(f'Game finished with total reward {total_reward}. Rolling average reward: {sum(reward_queue)/len(reward_queue)}')
             break
 
 print(policy.action_probabilities)
