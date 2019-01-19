@@ -8,19 +8,21 @@ env = gym.make('FrozenLake-v0')
 class Policy:
     num_actions = env.action_space.n
     num_states = env.observation_space.n
-    learning_rate = 0.05
+    learning_rate = 0.1
+    age_factor = 0.9
 
     action_probabilities = np.array(16 * [4 * [0.25]])
 
     def update(self, states, actions, reward):
+        age = len(states) - 1
         for state, action in zip(states, actions):
             self.action_probabilities[state, action] += max(0, (
-                self.learning_rate * reward
+                self.learning_rate * reward * pow(self.age_factor, age)
             ))
 
             self.action_probabilities[state] = (
                 self.action_probabilities[state] / self.action_probabilities[state].sum())
-            # update probablilities
+            age -= 1
 
     def get_action(self, state):
         return np.random.choice(
@@ -28,11 +30,11 @@ class Policy:
         )[0]
 
 
-num_episodes = 5000
+num_episodes = 10000
 max_steps = 100
 discount_factor = 1
 reward_queue = deque(maxlen=50)
-time_reward = -0.02
+time_reward = 0
 
 policy = Policy()
 
