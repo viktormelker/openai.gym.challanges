@@ -27,7 +27,7 @@ for attempt in range(num_episodes):
         action = policy.get_action(state)
         actions.append(action)
 
-        state, reward, done, info = env.step(action)
+        state, reward, done, _ = env.step(action)
         reward += time_reward
 
         total_reward = total_reward * discount_factor + reward

@@ -3,40 +3,41 @@
 from collections import deque
 
 import gym
-import numpy as np
+
+from policy import QTablePolicy
 
 env = gym.make('FrozenLake-v0')
 
-Q = np.zeros([env.observation_space.n, env.action_space.n])
-# Set learning parameters
-lr = .85
-y = .99
 num_episodes = 10000
 max_steps = 100
 
-# create lists to contain total rewards and steps per episode
 reward_queue = deque()
+time_reward = 0
 
+policy = QTablePolicy(num_actions=env.action_space.n,
+                      num_states=env.observation_space.n)
 
 for attempt in range(num_episodes):
-    # Reset environment and get first new observation
-    state = env.reset()
     total_reward = 0
-    # The Q-Table learning algorithm
+    state = env.reset()
+    states = []
+    actions = []
     for i in range(max_steps):
-        # Choose an action by greedily (with noise) picking from Q table
-        action = (np.argmax(Q[state, :] +
-            np.random.randn(1, env.action_space.n) * (1./(attempt + 1))))
-        # Get new state and reward from environment
+        states.append(state)
+
+        action = policy.get_action(state, attempt)
+        actions.append(action)
+
         state, reward, done, _ = env.step(action)
-        # Update Q-Table with new knowledge
-        Q[state, action] = Q[state, action] + lr * (reward + y * np.max(Q[state, :]) - Q[state, action])
+        reward += time_reward
 
         total_reward += reward
+        policy.update(states, actions, total_reward, result_state=state)
+
         if done is True:
             reward_queue.append(total_reward)
             break
 
 print("Score over time: " + str(sum(reward_queue) / num_episodes))
 print("Final Q-Table Values")
-print(Q)
+print(policy.Q)
