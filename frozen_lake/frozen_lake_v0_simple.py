@@ -11,7 +11,8 @@ discount_factor = 1
 reward_queue = deque(maxlen=50)
 time_reward = 0
 
-policy = Policy(env)
+policy = Policy(num_actions=env.action_space.n,
+                num_states=env.observation_space.n)
 
 for episode in range(num_episodes):
     total_reward = 0

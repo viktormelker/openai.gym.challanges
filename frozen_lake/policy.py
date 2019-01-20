@@ -3,10 +3,9 @@ import numpy as np
 
 class Policy:
 
-    def __init__(self, gym_environment):
-        self.gym_environment = gym_environment
-        self.num_actions = self.gym_environment.action_space.n
-        self.num_states = self.gym_environment.observation_space.n
+    def __init__(self, num_actions, num_states):
+        self.num_actions = num_actions
+        self.num_states = num_states
         self.learning_rate = 0.1
         self.age_factor = 0.9
 
