@@ -8,7 +8,7 @@ env = gym.make('FrozenLake-v0')
 num_episodes = 10000
 max_steps = 100
 discount_factor = 1
-reward_queue = deque(maxlen=50)
+reward_queue = deque()
 time_reward = 0
 
 policy = Policy(num_actions=env.action_space.n,
@@ -35,7 +35,7 @@ for attempt in range(num_episodes):
 
         if done is True:
             reward_queue.append(total_reward)
-            print(f'Game finished with total reward {total_reward}. Rolling average reward: {sum(reward_queue)/len(reward_queue)}')
             break
 
 print(policy.action_probabilities)
+print("Score over time: " + str(sum(reward_queue) / num_episodes))

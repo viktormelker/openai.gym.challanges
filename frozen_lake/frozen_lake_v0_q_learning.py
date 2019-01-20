@@ -1,5 +1,7 @@
 # taken from https://medium.com/emergent-future/simple-reinforcement-learning-with-tensorflow-part-0-q-learning-with-tables-and-neural-networks-d195264329d0
 
+from collections import deque
+
 import gym
 import numpy as np
 
@@ -9,11 +11,12 @@ Q = np.zeros([env.observation_space.n, env.action_space.n])
 # Set learning parameters
 lr = .85
 y = .99
-num_episodes = 20000
+num_episodes = 10000
 max_steps = 100
 
 # create lists to contain total rewards and steps per episode
-reward_queue = []
+reward_queue = deque()
+
 
 for attempt in range(num_episodes):
     # Reset environment and get first new observation
@@ -34,8 +37,8 @@ for attempt in range(num_episodes):
         total_reward += reward
         s = observation
         if done is True:
+            reward_queue.append(total_reward)
             break
-    reward_queue.append(total_reward)
 
 print("Score over time: " + str(sum(reward_queue) / num_episodes))
 print("Final Q-Table Values")
