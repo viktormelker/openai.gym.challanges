@@ -31,9 +31,9 @@ for episode in range(num_episodes):
         reward += time_reward
 
         total_reward = total_reward * discount_factor + reward
+        policy.update(states, actions, total_reward)
 
         if done is True:
-            policy.update(states, actions, total_reward)
             reward_queue.append(total_reward)
             print(f'Game finished with total reward {total_reward}. Rolling average reward: {sum(reward_queue)/len(reward_queue)}')
             break

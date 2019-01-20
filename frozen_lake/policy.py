@@ -12,6 +12,9 @@ class Policy:
     action_probabilities = np.array(16 * [4 * [0.25]])
 
     def update(self, states, actions, reward):
+        if reward == 0:
+            return
+
         age = len(states) - 1
         for state, action in zip(states, actions):
             self.action_probabilities[state, action] = max(0, (
