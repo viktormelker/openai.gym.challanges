@@ -20,22 +20,19 @@ reward_queue = deque()
 
 for attempt in range(num_episodes):
     # Reset environment and get first new observation
-    s = env.reset()
+    state = env.reset()
     total_reward = 0
-    step = 0
     # The Q-Table learning algorithm
     for i in range(max_steps):
-        step += 1
         # Choose an action by greedily (with noise) picking from Q table
-        action = (np.argmax(Q[s, :] +
+        action = (np.argmax(Q[state, :] +
             np.random.randn(1, env.action_space.n) * (1./(attempt + 1))))
         # Get new state and reward from environment
-        observation, reward, done, _ = env.step(action)
+        state, reward, done, _ = env.step(action)
         # Update Q-Table with new knowledge
-        Q[s, action] = Q[s, action] + lr * (reward + y * np.max(Q[observation, :]) - Q[s, action])
+        Q[state, action] = Q[state, action] + lr * (reward + y * np.max(Q[state, :]) - Q[state, action])
 
         total_reward += reward
-        s = observation
         if done is True:
             reward_queue.append(total_reward)
             break

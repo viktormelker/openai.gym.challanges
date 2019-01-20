@@ -1,7 +1,15 @@
 import numpy as np
 
 
-class Policy:
+class BasePolicy:
+    def update(self, states, actions, reward):
+        raise NotImplementedError
+
+    def get_action(self, state):
+        raise NotImplementedError
+
+
+class SimplePolicy(BasePolicy):
 
     def __init__(self, num_actions, num_states):
         self.num_actions = num_actions
@@ -33,3 +41,4 @@ class Policy:
         return np.random.choice(
             self.num_actions, 1, p=self.action_probabilities[state]
         )[0]
+
