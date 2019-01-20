@@ -10,7 +10,6 @@ env = gym.make('FrozenLake-v0')
 
 num_episodes = 10000
 max_steps = 100
-
 reward_queue = deque()
 time_reward = 0
 

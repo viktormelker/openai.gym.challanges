@@ -6,10 +6,8 @@ from policy import SimplePolicy
 
 env = gym.make('FrozenLake-v0')
 
-
 num_episodes = 10000
 max_steps = 100
-discount_factor = 1
 reward_queue = deque()
 time_reward = 0
 
@@ -30,7 +28,7 @@ for attempt in range(num_episodes):
         state, reward, done, _ = env.step(action)
         reward += time_reward
 
-        total_reward = total_reward * discount_factor + reward
+        total_reward += reward
         policy.update(states, actions, total_reward)
 
         if done is True:
