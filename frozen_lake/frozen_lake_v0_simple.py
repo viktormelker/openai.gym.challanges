@@ -14,7 +14,7 @@ time_reward = 0
 policy = Policy(num_actions=env.action_space.n,
                 num_states=env.observation_space.n)
 
-for episode in range(num_episodes):
+for attempt in range(num_episodes):
     total_reward = 0
     observation = env.reset()
     states = []

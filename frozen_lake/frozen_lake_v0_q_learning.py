@@ -10,18 +10,18 @@ Q = np.zeros([env.observation_space.n, env.action_space.n])
 lr = .85
 y = .99
 num_episodes = 20000
+max_steps = 100
 
 # create lists to contain total rewards and steps per episode
-rList = []
+reward_queue = []
 
 for attempt in range(num_episodes):
     # Reset environment and get first new observation
     s = env.reset()
-    rAll = 0
-    done = False
+    total_reward = 0
     step = 0
     # The Q-Table learning algorithm
-    while step < 99:
+    for i in range(max_steps):
         step += 1
         # Choose an action by greedily (with noise) picking from Q table
         action = (np.argmax(Q[s, :] +
@@ -31,12 +31,12 @@ for attempt in range(num_episodes):
         # Update Q-Table with new knowledge
         Q[s, action] = Q[s, action] + lr * (reward + y * np.max(Q[observation, :]) - Q[s, action])
 
-        rAll += reward
+        total_reward += reward
         s = observation
         if done is True:
             break
-    rList.append(rAll)
+    reward_queue.append(total_reward)
 
-print "Score over time: " + str(sum(rList) / num_episodes)
-print "Final Q-Table Values"
-print Q
+print("Score over time: " + str(sum(reward_queue) / num_episodes))
+print("Final Q-Table Values")
+print(Q)
