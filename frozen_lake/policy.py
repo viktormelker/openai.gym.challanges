@@ -2,6 +2,10 @@ import numpy as np
 
 
 class BasePolicy:
+    def __init__(self, num_actions, num_states):
+        self.num_actions = num_actions
+        self.num_states = num_states
+
     def update(self, states, actions, reward, **kwargs):
         raise NotImplementedError
 
@@ -12,8 +16,7 @@ class BasePolicy:
 class SimplePolicy(BasePolicy):
 
     def __init__(self, num_actions, num_states):
-        self.num_actions = num_actions
-        self.num_states = num_states
+        super().__init__(num_actions, num_states)
         self.learning_rate = 0.1
         self.age_factor = 0.9
         self.action_probabilities = np.array(
@@ -46,8 +49,7 @@ class SimplePolicy(BasePolicy):
 class QTablePolicy(BasePolicy):
 
     def __init__(self, num_actions, num_states):
-        self.num_actions = num_actions
-        self.num_states = num_states
+        super().__init__(num_actions, num_states)
         self.Q = np.zeros([num_states, num_actions])
         self.y = .99
         self.learning_rate = 0.85
