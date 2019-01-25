@@ -8,7 +8,7 @@ EPISODES = 1000
 
 if __name__ == "__main__":
     # initialize gym environment and the agent
-    env = gym.make('CartPole-v0')
+    env = gym.make('CartPole-v1')
 
     state_size = env.observation_space.shape[0]
     agent = DQNAgent(state_size=state_size, action_size=env.action_space.n)
