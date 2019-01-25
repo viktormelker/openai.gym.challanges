@@ -4,7 +4,7 @@ from collections import deque
 
 import gym
 
-from policy import QTablePolicy
+from app.policy import QTablePolicy
 
 env = gym.make('FrozenLake-v0')
 

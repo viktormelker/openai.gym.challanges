@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 
-from policy import DQNAgent
+from app.policy import DQNAgent
 
 EPISODES = 1000
 

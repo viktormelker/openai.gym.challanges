@@ -2,7 +2,7 @@ from collections import deque
 
 import gym
 
-from policy import SimplePolicy
+from app.policy import SimplePolicy
 
 env = gym.make('FrozenLake-v0')
 
