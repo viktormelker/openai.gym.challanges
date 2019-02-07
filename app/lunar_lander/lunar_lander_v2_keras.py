@@ -4,49 +4,54 @@ import numpy as np
 from app.policy import DQNAgent
 from collections import deque
 
-EPISODES = 1000
+EPISODES = 200
 
 if __name__ == "__main__":
     # initialize gym environment and the agent
     env = gym.make('LunarLander-v2')
     # MountainCarContinuous-v0
     state_size = env.observation_space.shape[0]
-    agent = DQNAgent(state_size=state_size, action_size=env.action_space.n)
+    agent = DQNAgent(state_size=state_size, action_size=env.action_space.n, gamma=0.98)
 
+    total_rewards = deque(maxlen=20)
     # Iterate the game
-    for e in range(EPISODES):
+    for episode in range(EPISODES):
         # reset state in the beginning of each game
         state = env.reset()
         state = np.reshape(state, [1, state_size])
-        # time_t represents each frame of the game
-        # Our goal is to keep the pole upright as long as possible until score of 500
-        # the more time_t the more score
+
         rewards = []
         for time_t in range(500):
             # turn this on if you want to render
-            env.render()
+            #if episode > 10:
+            #    env.render()
             # Decide action
             action = agent.act(state)
             # Advance the game to the next frame based on the action.
 
             next_state, reward, done, _ = env.step(action)
+            reward -= 0.2
 
             next_state = np.reshape(next_state, [1, state_size])
 
             # Remember the previous state, action, reward, and done
-            if reward:
-                agent.remember(state, action, reward, next_state, done)
+            agent.remember(state, action, reward, next_state, done)
+
+            rewards.append(reward)
 
             # make next_state the new current state for the next frame.
             state = next_state
 
+            # train the agent with the experience of the episode
+            agent.replay()
+
             # done becomes True when the game ends
-            # ex) The agent drops the pole
             if done:
                 # print the score and break out of the loop
-                print(
-                    "episode: {}/{}, time_t: {}".format(
-                        e, EPISODES, time_t))
                 break
-        # train the agent with the experience of the episode
-        agent.replay(2000)
+
+        total_reward = sum(rewards)
+        total_rewards.append(total_reward)
+        print(
+            "episode: {}/{}, time_t: {}, reward: {}, average reward: {}".format(
+                episode, EPISODES, time_t, total_reward, sum(total_rewards)/len(total_rewards)))
