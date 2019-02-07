@@ -1,3 +1,4 @@
+import os
 import random
 from collections import deque
 
@@ -81,17 +82,27 @@ class QTablePolicy(BasePolicy):
 class DQNAgent:
     def __init__(
         self, state_size, action_size, gamma=0.95, epsilon=1.0,
-        learning_rate=0.001
+        epsilon_min=0.01, epsilon_decay=0.995, learning_rate=0.001,
+        model_file=None, weight_file=None
     ):
         self.state_size = state_size
         self.action_size = action_size
         self.memory = deque(maxlen=2000)
         self.gamma = gamma  # discount rate
         self.epsilon = epsilon  # exploration rate
-        self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995
+        self.epsilon_min = epsilon_min
+        self.epsilon_decay = epsilon_decay
         self.learning_rate = learning_rate
-        self.model = self._build_model()
+        self.model_file = model_file
+        self.weight_file = weight_file
+
+        if self.model_file is None:
+            self.model = self._build_model()
+        else:
+            self.model = self.load_model()
+
+        if self.weight_file is not None:
+            self.load_weights()
 
     def _build_model(self):
         # Neural Net for Deep-Q learning Model
@@ -127,15 +138,29 @@ class DQNAgent:
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
+    def save_model(self):
+        pass
+
+    def load_model(self):
+        return None
+
+    def save_weights(self):
+        self.model.save_weights(self.weight_file)
+
+    def load_weights(self):
+        if os.path.exists(self.weight_file):
+            self.model.load_weights(self.weight_file)
+            print('Loaded weights from file: ' + self.weight_file)
+        else:
+            print('Could not load weights from non-existing file: ' + self.weight_file)
+
 
 class DoubleDQNAgent(DQNAgent):
     def __init__(
-        self, state_size, action_size, gamma=0.95, epsilon=1.0,
-        learning_rate=0.001
+        self, state_size, action_size, **kwargs
     ):
         super().__init__(
-            state_size, action_size, gamma=gamma, epsilon=epsilon,
-            learning_rate=learning_rate)
+            state_size, action_size, **kwargs)
         self.tau = 0.05
         self.target_model = self._build_model()
 
