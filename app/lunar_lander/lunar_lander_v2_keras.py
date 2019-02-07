@@ -9,9 +9,9 @@ EPISODES = 200
 if __name__ == "__main__":
     # initialize gym environment and the agent
     env = gym.make('LunarLander-v2')
-    # MountainCarContinuous-v0
     state_size = env.observation_space.shape[0]
-    agent = DQNAgent(state_size=state_size, action_size=env.action_space.n, gamma=0.98)
+    agent = DQNAgent(
+        state_size=state_size, action_size=env.action_space.n, gamma=0.98)
 
     total_rewards = deque(maxlen=20)
     # Iterate the game
@@ -25,9 +25,9 @@ if __name__ == "__main__":
             # turn this on if you want to render
             #if episode > 10:
             #    env.render()
+
             # Decide action
             action = agent.act(state)
-            # Advance the game to the next frame based on the action.
 
             next_state, reward, done, _ = env.step(action)
             reward -= 0.2
@@ -35,9 +35,8 @@ if __name__ == "__main__":
             next_state = np.reshape(next_state, [1, state_size])
 
             # Remember the previous state, action, reward, and done
-            agent.remember(state, action, reward, next_state, done)
-
             rewards.append(reward)
+            agent.remember(state, action, reward, next_state, done)
 
             # make next_state the new current state for the next frame.
             state = next_state
