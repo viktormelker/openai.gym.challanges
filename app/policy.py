@@ -129,8 +129,13 @@ class DQNAgent:
 
 
 class DoubleDQNAgent(DQNAgent):
-    def __init__(self, state_size, action_size):
-        super().__init__(state_size, action_size)
+    def __init__(
+        self, state_size, action_size, gamma=0.95, epsilon=1.0,
+        learning_rate=0.001
+    ):
+        super().__init__(
+            state_size, action_size, gamma=gamma, epsilon=epsilon,
+            learning_rate=learning_rate)
         self.tau = 0.05
         self.target_model = self._build_model()
 
