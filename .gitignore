@@ -114,3 +114,5 @@ ENV/
 # PyCharm/other IntelliJ products
 .idea
 
+# calculated weights
+*.h5
