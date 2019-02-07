@@ -145,6 +145,7 @@ class DQNAgent:
         return None
 
     def save_weights(self):
+        print('Saved weights to file: ' + self.weight_file)
         self.model.save_weights(self.weight_file)
 
     def load_weights(self):
