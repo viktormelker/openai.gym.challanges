@@ -4,15 +4,16 @@ import gym
 
 from app.policy import SimplePolicy
 
-env = gym.make('FrozenLake-v0')
+env = gym.make("FrozenLake-v0")
 
 num_episodes = 10000
 max_steps = 100
 reward_queue = deque()
 time_reward = 0
 
-policy = SimplePolicy(num_actions=env.action_space.n,
-                      num_states=env.observation_space.n)
+policy = SimplePolicy(
+    num_actions=env.action_space.n, num_states=env.observation_space.n
+)
 
 for attempt in range(num_episodes):
     total_reward = 0

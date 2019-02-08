@@ -8,7 +8,7 @@ EPISODES = 1000
 
 if __name__ == "__main__":
     # initialize gym environment and the agent
-    env = gym.make('MountainCar-v0')
+    env = gym.make("MountainCar-v0")
     # MountainCarContinuous-v0
     state_size = env.observation_space.shape[0]
     agent = DoubleDQNAgent(state_size=state_size, action_size=env.action_space.n)
@@ -58,8 +58,11 @@ if __name__ == "__main__":
 
                 print(
                     "episode: {0:4d}/{1:4d}, time_t: {2:3d}, max pos: {3:8.4f}, avg pos: {4:8.4f}".format(
-                        e, EPISODES, time_t, max(positions),
-                        sum(best_positions)/len(best_positions)
+                        e,
+                        EPISODES,
+                        time_t,
+                        max(positions),
+                        sum(best_positions) / len(best_positions),
                     )
                 )
                 break

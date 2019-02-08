@@ -4,7 +4,7 @@ import gym
 import numpy as np
 import tensorflow as tf
 
-env = gym.make('CartPole-v0')
+env = gym.make("CartPole-v0")
 tf.reset_default_graph()
 
 # hyperparameters
@@ -21,11 +21,17 @@ tf.reset_default_graph()
 # the environment to
 # giving a probability of chosing to the action of moving left or right.
 observations = tf.placeholder(tf.float32, [None, input_dim], name="input_x")
-W1 = tf.get_variable("W1", shape=[input_dim, num_hidden_layers],
-                     initializer=tf.contrib.layers.xavier_initializer())
+W1 = tf.get_variable(
+    "W1",
+    shape=[input_dim, num_hidden_layers],
+    initializer=tf.contrib.layers.xavier_initializer(),
+)
 layer1 = tf.nn.relu(tf.matmul(observations, W1))
-W2 = tf.get_variable("W2", shape=[num_hidden_layers, 1],
-                     initializer=tf.contrib.layers.xavier_initializer())
+W2 = tf.get_variable(
+    "W2",
+    shape=[num_hidden_layers, 1],
+    initializer=tf.contrib.layers.xavier_initializer(),
+)
 score = tf.matmul(layer1, W2)
 probability = tf.nn.sigmoid(score)
 
@@ -39,8 +45,9 @@ advantages = tf.placeholder(tf.float32, name="reward_signal")
 # direction of making actions
 # that gave good advantage (reward over time) more likely,
 # and actions that didn't less likely.
-loglik = tf.log(input_y * (input_y - probability) +
-                (1 - input_y) * (input_y + probability))
+loglik = tf.log(
+    input_y * (input_y - probability) + (1 - input_y) * (input_y + probability)
+)
 loss = -tf.reduce_mean(loglik * advantages)
 newGrads = tf.gradients(loss, tvars)
 
@@ -49,7 +56,9 @@ newGrads = tf.gradients(loss, tvars)
 # We don't just apply gradeients after every episode in order
 # to account for noise in the reward signal.
 adam = tf.train.AdamOptimizer(learning_rate=learning_rate)  # Our optimizer
-W1Grad = tf.placeholder(tf.float32, name="batch_grad1")  # Placeholders to send the final gradients through when we update.
+W1Grad = tf.placeholder(
+    tf.float32, name="batch_grad1"
+)  # Placeholders to send the final gradients through when we update.
 W2Grad = tf.placeholder(tf.float32, name="batch_grad2")
 batchGrad = [W1Grad, W2Grad]
 updateGrads = adam.apply_gradients(zip(batchGrad, tvars))
@@ -87,7 +96,7 @@ with tf.Session() as sess:
     while episode_number <= total_episodes:
         # Rendering the environment slows things down,
         # so let's only look at it once our agent is doing a good job.
-        if reward_sum / batch_size > 150 or rendering is True :
+        if reward_sum / batch_size > 150 or rendering is True:
             env.render()
             rendering = False
 
@@ -106,7 +115,9 @@ with tf.Session() as sess:
         observation, reward, done, info = env.step(action)
         reward_sum += reward
 
-        reward_list.append(reward)  # record reward (has to be done after we call step() to get reward for previous action)
+        reward_list.append(
+            reward
+        )  # record reward (has to be done after we call step() to get reward for previous action)
 
         if done:
             episode_number += 1
@@ -124,28 +135,38 @@ with tf.Session() as sess:
             discounted_epr /= np.std(discounted_epr)
 
             # Get the gradient for this episode, and save it in the gradBuffer
-            tGrad = sess.run(newGrads,
-                             feed_dict={observations: epx, input_y: epy, advantages: discounted_epr})
+            tGrad = sess.run(
+                newGrads,
+                feed_dict={observations: epx, input_y: epy, advantages: discounted_epr},
+            )
             for ix, grad in enumerate(tGrad):
                 gradBuffer[ix] += grad
 
             # If we have completed enough episodes, then update the policy network with our gradients.
             if episode_number % batch_size == 0:
-                sess.run(updateGrads,
-                         feed_dict={W1Grad: gradBuffer[0], W2Grad:gradBuffer[1]})
+                sess.run(
+                    updateGrads,
+                    feed_dict={W1Grad: gradBuffer[0], W2Grad: gradBuffer[1]},
+                )
                 for ix, grad in enumerate(gradBuffer):
                     gradBuffer[ix] = grad * 0
 
                 # Give a summary of how well our network is doing for each batch of episodes.
-                running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
-                print(f'Average reward for episode {reward_sum/batch_size}.  Total average reward {running_reward/batch_size}.')
+                running_reward = (
+                    reward_sum
+                    if running_reward is None
+                    else running_reward * 0.99 + reward_sum * 0.01
+                )
+                print(
+                    f"Average reward for episode {reward_sum/batch_size}.  Total average reward {running_reward/batch_size}."
+                )
 
-                if reward_sum/batch_size > 200:
-                    print( "Task solved in" + episode_number + 'episodes!')
+                if reward_sum / batch_size > 200:
+                    print("Task solved in" + episode_number + "episodes!")
                     break
 
                 reward_sum = 0
 
             observation = env.reset()
 
-print(f'{episode_number} Episodes completed.')
+print(f"{episode_number} Episodes completed.")

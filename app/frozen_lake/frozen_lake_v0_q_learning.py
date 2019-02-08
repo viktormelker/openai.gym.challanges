@@ -6,14 +6,15 @@ import gym
 
 from app.policy import QTablePolicy
 
-env = gym.make('FrozenLake-v0')
+env = gym.make("FrozenLake-v0")
 
 num_episodes = 10000
 max_steps = 100
 reward_queue = deque()
 
-policy = QTablePolicy(num_actions=env.action_space.n,
-                      num_states=env.observation_space.n)
+policy = QTablePolicy(
+    num_actions=env.action_space.n, num_states=env.observation_space.n
+)
 
 for attempt in range(num_episodes):
     state = env.reset()
