@@ -4,7 +4,7 @@ import numpy as np
 from app.policy import DoubleDQNAgent
 from collections import deque
 
-EPISODES = 25
+EPISODES = 100
 
 if __name__ == "__main__":
     # initialize gym environment and the agent
@@ -12,8 +12,9 @@ if __name__ == "__main__":
     state_size = env.observation_space.shape[0]
     agent = DoubleDQNAgent(
         state_size=state_size, action_size=env.action_space.n,
-        gamma=0.99, epsilon_min=0.01, weight_file='app/lunar_lander/weights/DQNN_weights.h5')
-    time_reward = -0.25
+        learning_rate=0.001,
+        weight_file='app/lunar_lander/weights/DQNN_weights_2.h5')
+    time_reward = 0
 
     total_rewards = deque(maxlen=10)
     # Iterate the game
@@ -25,7 +26,7 @@ if __name__ == "__main__":
         rewards = []
         for time_t in range(500):
             # turn this on if you want to render
-            if episode > 30:
+            if episode > 0:
                 env.render()
 
             # Decide action
@@ -54,7 +55,7 @@ if __name__ == "__main__":
         total_reward = sum(rewards)
         total_rewards.append(total_reward)
         print(
-            "episode: {}/{}, time_t: {}, reward: {}, average reward: {}".format(
+            "episode: {0:4d}/{1:4d}, time_t: {2:3d}, reward: {3:8.2f}, average reward: {4:8.2f}".format(
                 episode, EPISODES, time_t, total_reward, sum(total_rewards)/len(total_rewards)))
 
     agent.save_weights()
