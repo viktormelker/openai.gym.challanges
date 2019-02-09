@@ -13,7 +13,7 @@ RUN apt-get update -qq \
 COPY requirements.txt /tmp/
 RUN pip3 install --process-dependency-links --no-cache-dir -r /tmp/requirements.txt
 
-WORKDIR /app
+WORKDIR /openai
 COPY . /app
 
 # default command
