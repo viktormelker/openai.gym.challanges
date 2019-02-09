@@ -4,14 +4,13 @@ import numpy as np
 from app.policy import DQNAgent
 from collections import deque
 
-EPISODES = 200
+EPISODES = 20
 
 if __name__ == "__main__":
     # initialize gym environment and the agent
-    env = gym.make('LunarLander-v2')
+    env = gym.make("LunarLander-v2")
     state_size = env.observation_space.shape[0]
-    agent = DQNAgent(
-        state_size=state_size, action_size=env.action_space.n, gamma=0.98)
+    agent = DQNAgent(state_size=state_size, action_size=env.action_space.n, gamma=0.98)
 
     total_rewards = deque(maxlen=20)
     # Iterate the game
@@ -23,14 +22,14 @@ if __name__ == "__main__":
         rewards = []
         for time_t in range(500):
             # turn this on if you want to render
-            #if episode > 10:
+            # if episode > 0:
             #    env.render()
 
             # Decide action
             action = agent.act(state)
 
             next_state, reward, done, _ = env.step(action)
-            reward -= 0.2
+            # reward -= 0.2
 
             next_state = np.reshape(next_state, [1, state_size])
 
@@ -52,5 +51,11 @@ if __name__ == "__main__":
         total_reward = sum(rewards)
         total_rewards.append(total_reward)
         print(
-            "episode: {}/{}, time_t: {}, reward: {}, average reward: {}".format(
-                episode, EPISODES, time_t, total_reward, sum(total_rewards)/len(total_rewards)))
+            "episode: {0:4d}/{1:4d}, time_t: {2:3d}, reward: {3:8.2f}, average reward: {4:8.2f}".format(
+                episode,
+                EPISODES,
+                time_t,
+                total_reward,
+                sum(total_rewards) / len(total_rewards),
+            )
+        )

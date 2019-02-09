@@ -1,21 +1,17 @@
-import gym
 import numpy as np
 
-from app.policy import DoubleDQNAgent
+from app.mountain_car.agents import ddqnAgent as agent
+from app.mountain_car.environment import env
 from collections import deque
 
 EPISODES = 1000
 
 if __name__ == "__main__":
-    # initialize gym environment and the agent
-    env = gym.make("MountainCar-v0")
-    # MountainCarContinuous-v0
-    state_size = env.observation_space.shape[0]
-    agent = DoubleDQNAgent(state_size=state_size, action_size=env.action_space.n)
 
+    state_size = env.observation_space.shape[0]
     best_positions = deque(maxlen=20)
     # Iterate the game
-    for e in range(EPISODES):
+    for episode in range(EPISODES):
         # reset state in the beginning of each game
         state = env.reset()
         state = np.reshape(state, [1, state_size])
@@ -26,7 +22,7 @@ if __name__ == "__main__":
         positions = [-100]
         for time_t in range(500):
             # turn this on if you want to render
-            if e > 20:
+            if episode > 20:
                 env.render()
 
             # Decide action
@@ -58,7 +54,7 @@ if __name__ == "__main__":
 
                 print(
                     "episode: {0:4d}/{1:4d}, time_t: {2:3d}, max pos: {3:8.4f}, avg pos: {4:8.4f}".format(
-                        e,
+                        episode,
                         EPISODES,
                         time_t,
                         max(positions),
