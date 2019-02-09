@@ -20,7 +20,7 @@ if __name__ == "__main__":
         positions = [-100]
         for time_t in range(500):
 
-            if episode > 20:
+            if episode > 0:
                 env.render()
 
             action = agent.act(state)
@@ -28,11 +28,6 @@ if __name__ == "__main__":
             next_state, reward, done, _ = env.step(action)
 
             next_state = np.reshape(next_state, [1, state_size])
-
-            if next_state[0, 0] >= 0.5:
-                reward = 1000  # we did it!
-            if next_state[0, 0] > max(positions):
-                reward = next_state[0, 0]
 
             positions.append(next_state[0, 0])
 

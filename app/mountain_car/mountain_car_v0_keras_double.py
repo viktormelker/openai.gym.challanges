@@ -29,11 +29,6 @@ if __name__ == "__main__":
 
             next_state = np.reshape(next_state, [1, state_size])
 
-            if next_state[0, 0] >= 0.5:
-                reward = 1000  # we did it!
-            if next_state[0, 0] > max(positions):
-                reward = next_state[0, 0]
-
             positions.append(next_state[0, 0])
 
             # Remember the previous state, action, reward, and done
