@@ -4,7 +4,7 @@ from app.mountain_car.agents import ddqnAgent as agent
 from app.mountain_car.environment import env, success_x_pos
 from collections import deque
 
-EPISODES = 1000
+EPISODES = 100
 
 if __name__ == "__main__":
     state_size = env.observation_space.shape[0]
@@ -61,3 +61,5 @@ if __name__ == "__main__":
             print(
                 f'Successfully finished the challenge in {episode} training runs!')
             break
+
+    agent.save_weights()

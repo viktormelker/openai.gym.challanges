@@ -1,9 +1,9 @@
-scaling_factor = 0.1
+scaling_factor = 1
 
 
 def potential_function(state):
     x_pos = state[0][0]
-    height = abs(x_pos - 0.5)
     speed = state[0][1]
-    g = 9.82
-    return ((height * g) + (speed * speed / 2) + x_pos * 2) * scaling_factor
+    # print(f'speed: {speed:4.2f}, xpos: {x_pos:4.2f}')
+    # return ((speed * speed / 2) + x_pos * 5) * scaling_factor
+    return x_pos * 100 + speed * speed * 10
