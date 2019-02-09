@@ -6,4 +6,4 @@ def potential_function(state):
     height = abs(x_pos - 0.5)
     speed = state[0][1]
     g = 9.82
-    return ((height * g) + (speed * speed / 2) + x_pos) * scaling_factor
+    return ((height * g) + (speed * speed / 2) + x_pos * 2) * scaling_factor

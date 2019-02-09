@@ -33,6 +33,8 @@ if __name__ == "__main__":
 
             # Remember the previous state, action, reward, and done
             agent.remember(state, action, reward, next_state, done)
+            rewards.append(reward)
+
             agent.replay()
             agent.target_train()
 
@@ -44,12 +46,13 @@ if __name__ == "__main__":
                 average_best_pos = sum(best_positions) / len(best_positions)
 
                 print(
-                    "episode: {0:4d}/{1:4d}, time_t: {2:3d}, max pos: {3:8.4f}, avg pos: {4:8.4f}".format(
+                    "episode: {0:4d}/{1:4d}, time_t: {2:3d}, max pos: {3:6.2f}, avg pos: {4:6.2f}, total reward: {5:6.2f}".format(
                         episode,
                         EPISODES,
                         time_t,
                         max(positions),
                         average_best_pos,
+                        sum(rewards)
                     )
                 )
                 break
