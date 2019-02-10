@@ -9,70 +9,30 @@ from keras.models import Sequential
 from keras.optimizers import Adam
 
 
-class BasePolicy:
-    def __init__(self, num_actions, num_states):
-        self.num_actions = num_actions
-        self.num_states = num_states
+class QLearningPolicy:
+    def __init__(self, state_size, action_size, **kwargs):
+        self.state_size = state_size
+        self.action_size = action_size
 
-    def update(self, states, actions, reward, **kwargs):
+    def update(self, state, action, reward, next_state, done, **kwargs):
         raise NotImplementedError
 
     def get_action(self, state, **kwargs):
         raise NotImplementedError
 
 
-class SimplePolicy(BasePolicy):
-    def __init__(self, num_actions, num_states):
-        super().__init__(num_actions, num_states)
-        self.learning_rate = 0.1
-        self.age_factor = 0.9
-        self.action_probabilities = np.array(num_states * [num_actions * [0.25]])
-
-    def update(self, states, actions, reward):
-        if reward == 0:
-            return
-
-        age = len(states) - 1
-        for state, action in zip(states, actions):
-            self.action_probabilities[state, action] = max(
-                0,
-                (
-                    self.action_probabilities[state, action]
-                    + self.learning_rate * reward * pow(self.age_factor, age)
-                ),
-            )
-
-            self._normalize(state)
-            age -= 1
-
-    def _normalize(self, state):
-        self.action_probabilities[state] = (
-            self.action_probabilities[state] / self.action_probabilities[state].sum()
-        )
-
-    def get_action(self, state, attempt=1):
-        return np.random.choice(
-            self.num_actions, 1, p=self.action_probabilities[state]
-        )[0]
-
-
-class QTablePolicy(BasePolicy):
-    def __init__(self, num_actions, num_states):
-        super().__init__(num_actions, num_states)
-        self.Q = np.zeros([num_states, num_actions])
+class QTablePolicy(QLearningPolicy):
+    def __init__(self, state_size, action_size):
+        super().__init__(state_size=state_size, action_size=action_size)
+        self.Q = np.zeros([state_size, action_size])
         self.y = 0.99
         self.learning_rate = 0.85
 
-    def update(self, states, actions, reward, result_state, **kwargs):
-        state = states[-1]
-        action = actions[-1]
-
+    def update(self, state, action, reward, next_state, done, **kwargs):
         # Update Q-Table with new knowledge from last step
         self.Q[state, action] = (1 - self.learning_rate) * self.Q[
             state, action
         ] + self.learning_rate * (reward + self.y * np.max(self.Q[result_state, :]))
-
-        return
 
     def get_action(self, state, attempt, **kwargs):
         # Choose an action by greedily (with noise) picking from Q table
@@ -82,20 +42,20 @@ class QTablePolicy(BasePolicy):
         )
 
 
-class RandomPolicy(BasePolicy):
+class RandomPolicy(QLearningPolicy):
     def __init__(self, state_size, action_size):
         self.state_size = state_size
         self.action_size = action_size
 
-    def update(self, states, actions, reward, result_state, **kwargs):
+    def update(self, state, action, reward, next_state, done, **kwargs):
         pass
 
-    def get_action(self, state, attempt, **kwargs):
+    def get_action(self, state, **kwargs):
         return np.argmax(np.random.randn(1, self.action_size))
 
 
 # Deep Q-learning Agent
-class DQNAgent:
+class DQNAgent(QLearningPolicy):
     def __init__(
         self,
         state_size,
@@ -138,16 +98,16 @@ class DQNAgent:
         model.compile(loss="mse", optimizer=Adam(lr=self.learning_rate))
         return model
 
-    def remember(self, state, action, reward, next_state, done):
+    def _remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
-    def act(self, state):
+    def get_action(self, state, **kwargs):
         if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_size)
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
 
-    def replay(self, batch_size=32):
+    def _replay(self, batch_size=32):
         if batch_size > len(self.memory):
             return
 
@@ -189,6 +149,10 @@ class DQNAgent:
         else:
             print("Could not load weights from non-existing file: " + self.weight_file)
 
+    def update(self, state, action, reward, next_state, done, **kwargs):
+        self._remember(state=state, action=action, reward=reward, next_state=next_state, done=done)
+        self._replay(**kwargs)
+
 
 class DoubleDQNAgent(DQNAgent):
     def __init__(self, state_size, action_size, **kwargs):
@@ -196,7 +160,7 @@ class DoubleDQNAgent(DQNAgent):
         self.tau = 0.05
         self.target_model = self._build_model()
 
-    def target_train(self):
+    def _target_train(self):
         weights = self.model.get_weights()
         target_weights = self.target_model.get_weights()
 
@@ -207,7 +171,7 @@ class DoubleDQNAgent(DQNAgent):
 
         self.target_model.set_weights(target_weights)
 
-    def replay(self, batch_size=32):
+    def _replay(self, batch_size=32):
         if batch_size > len(self.memory):
             return
 
@@ -228,3 +192,8 @@ class DoubleDQNAgent(DQNAgent):
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
+
+    def update(self, state, action, reward, next_state, done, **kwargs):
+        self._remember(state=state, action=action, reward=reward, next_state=next_state, done=done)
+        self._target_train()
+        self._replay(**kwargs)
