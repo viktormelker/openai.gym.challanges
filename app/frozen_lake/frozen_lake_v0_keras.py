@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 
-from app.policy import DQNAgent
+from app.policies.q_learning import DQNAgent
 
 EPISODES = 1000
 
@@ -23,13 +23,13 @@ if __name__ == "__main__":
             # turn this on if you want to render
             # env.render()
             # Decide action
-            action = agent.act(state)
+            action = agent.get_action(state)
             # Advance the game to the next frame based on the action.
             # Reward is 1 for every frame the pole survived
             next_state, reward, done, _ = env.step(action)
             next_state = np.reshape(next_state, [1, 4])
             # Remember the previous state, action, reward, and done
-            agent.remember(state, action, reward, next_state, done)
+            agent.update(state, action, reward, next_state, done)
             # make next_state the new current state for the next frame.
             state = next_state
             # done becomes True when the game ends
@@ -38,5 +38,3 @@ if __name__ == "__main__":
                 # print the score and break out of the loop
                 print("episode: {}/{}, score: {}".format(e, EPISODES, time_t))
                 break
-        # train the agent with the experience of the episode
-        agent.replay(32)
