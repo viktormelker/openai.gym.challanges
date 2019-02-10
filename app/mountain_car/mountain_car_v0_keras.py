@@ -51,14 +51,13 @@ if __name__ == "__main__":
                         time_t,
                         max(positions),
                         average_best_pos,
-                        sum(rewards)
+                        sum(rewards),
                     )
                 )
                 break
 
         if average_best_pos > success_x_pos:
-            print(
-                f'Successfully finished the challenge in {episode} training runs!')
+            print(f"Successfully finished the challenge in {episode} training runs!")
             break
 
     agent.save_weights()

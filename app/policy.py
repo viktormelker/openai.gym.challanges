@@ -83,11 +83,7 @@ class QTablePolicy(BasePolicy):
 
 
 class RandomPolicy(BasePolicy):
-    def __init__(
-        self,
-        state_size,
-        action_size,
-    ):
+    def __init__(self, state_size, action_size):
         self.state_size = state_size
         self.action_size = action_size
 
@@ -221,12 +217,10 @@ class DoubleDQNAgent(DQNAgent):
                 target = reward
             else:
                 target = (
-                    reward -
-                    self.potential_function(state) +
-                    self.gamma * self.potential_function(next_state) +
-                    self.gamma * np.amax(
-                        self.target_model.predict(next_state)[0]
-                    )
+                    reward
+                    - self.potential_function(state)
+                    + self.gamma * self.potential_function(next_state)
+                    + self.gamma * np.amax(self.target_model.predict(next_state)[0])
                 )
             target_f = self.target_model.predict(state)
             target_f[0][action] = target

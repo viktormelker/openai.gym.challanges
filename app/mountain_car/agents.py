@@ -22,7 +22,4 @@ dqnAgent = DQNAgent(
     weight_file="app/mountain_car/weights/DQNN_weights_1.h5",
 )
 
-random_policy = RandomPolicy(
-    state_size=state_size,
-    action_size=env.action_space.n,
-)
+random_policy = RandomPolicy(state_size=state_size, action_size=env.action_space.n)
