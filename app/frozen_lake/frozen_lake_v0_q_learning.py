@@ -4,7 +4,9 @@ from collections import deque
 
 import gym
 
-from app.policy import QTablePolicy
+import numpy as np
+
+from app.policies.q_learning import QTablePolicy
 
 env = gym.make("FrozenLake-v0")
 
@@ -13,11 +15,13 @@ max_steps = 100
 reward_queue = deque()
 
 policy = QTablePolicy(
-    num_actions=env.action_space.n, num_states=env.observation_space.n
+    state_size=env.observation_space.n,
+    action_size=env.action_space.n,
 )
 
 for attempt in range(num_episodes):
     state = env.reset()
+    state = np.reshape(state, [1, 1])
     states = []
     actions = []
     for i in range(max_steps):
@@ -26,8 +30,10 @@ for attempt in range(num_episodes):
         action = policy.get_action(state, attempt)
         actions.append(action)
 
-        state, reward, done, _ = env.step(action)
-        policy.update(states, actions, reward, result_state=state)
+        next_state, reward, done, _ = env.step(action)
+        next_state = np.reshape(next_state, [1, 1])
+        policy.update(state=state, action=action, reward=reward, next_state=next_state, done=done)
+        state = next_state
 
         if done is True:
             break
