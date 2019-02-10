@@ -31,9 +31,9 @@ if __name__ == "__main__":
 
             positions.append(next_state[0, 0])
 
-            # Remember the previous state, action, reward, and done
-            agent.update(state, action, reward, next_state, done)
             rewards.append(reward)
+
+            agent.update(state, action, reward, next_state, done)
 
             state = next_state
 
