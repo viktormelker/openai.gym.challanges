@@ -8,6 +8,6 @@ class TestRandomPolicy:
     policy = RandomPolicy(state_size=state_size, action_size=action_size)
 
     def test_get_action_works(self):
-        action = self.policy.get_action(1, 1)
-
-        assert action <= self.action_size
+        for i in range(0, self.action_size * 10):
+            action = self.policy.get_action(1, 1)
+            assert action <= self.action_size
