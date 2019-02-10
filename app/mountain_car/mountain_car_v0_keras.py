@@ -4,7 +4,7 @@ from app.mountain_car.agents import dqnAgent as agent
 from app.mountain_car.environment import env, success_x_pos
 from collections import deque
 
-EPISODES = 150
+EPISODES = 50
 
 if __name__ == "__main__":
     state_size = env.observation_space.shape[0]
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         positions = [-100]
         for time_t in range(500):
 
-            if episode > 30:
+            if episode > 0:
                 env.render()
 
             action = agent.act(state)
