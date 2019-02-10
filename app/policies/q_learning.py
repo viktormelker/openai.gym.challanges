@@ -150,7 +150,9 @@ class DQNAgent(QLearningPolicy):
             print("Could not load weights from non-existing file: " + self.weight_file)
 
     def update(self, state, action, reward, next_state, done, **kwargs):
-        self._remember(state=state, action=action, reward=reward, next_state=next_state, done=done)
+        self._remember(
+            state=state, action=action, reward=reward, next_state=next_state, done=done
+        )
         self._replay(**kwargs)
 
 
@@ -194,6 +196,8 @@ class DoubleDQNAgent(DQNAgent):
             self.epsilon *= self.epsilon_decay
 
     def update(self, state, action, reward, next_state, done, **kwargs):
-        self._remember(state=state, action=action, reward=reward, next_state=next_state, done=done)
+        self._remember(
+            state=state, action=action, reward=reward, next_state=next_state, done=done
+        )
         self._target_train()
         self._replay(**kwargs)

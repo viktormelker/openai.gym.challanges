@@ -8,9 +8,7 @@ EPISODES = 1000
 if __name__ == "__main__":
     # initialize gym environment and the agent
     env = gym.make("FrozenLake-v0")
-    agent = DQNAgent(
-        state_size=env.observation_space.n, action_size=env.action_space.n
-    )
+    agent = DQNAgent(state_size=env.observation_space.n, action_size=env.action_space.n)
     # Iterate the game
     for e in range(EPISODES):
         # reset state in the beginning of each game

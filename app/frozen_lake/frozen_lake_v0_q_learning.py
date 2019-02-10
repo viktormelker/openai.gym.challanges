@@ -15,8 +15,7 @@ max_steps = 100
 reward_queue = deque()
 
 policy = QTablePolicy(
-    state_size=env.observation_space.n,
-    action_size=env.action_space.n,
+    state_size=env.observation_space.n, action_size=env.action_space.n
 )
 
 for attempt in range(num_episodes):
@@ -32,7 +31,9 @@ for attempt in range(num_episodes):
 
         next_state, reward, done, _ = env.step(action)
         next_state = np.reshape(next_state, [1, 1])
-        policy.update(state=state, action=action, reward=reward, next_state=next_state, done=done)
+        policy.update(
+            state=state, action=action, reward=reward, next_state=next_state, done=done
+        )
         state = next_state
 
         if done is True:
