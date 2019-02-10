@@ -10,7 +10,7 @@ RUN apt-get update -qq \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /tmp/
+COPY requirements/prod.txt /tmp/
 RUN pip3 install --process-dependency-links --no-cache-dir -r /tmp/requirements.txt
 
 WORKDIR /openai

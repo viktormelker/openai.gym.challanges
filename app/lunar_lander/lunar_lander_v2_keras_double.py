@@ -8,12 +8,14 @@ EPISODES = 100
 
 if __name__ == "__main__":
     # initialize gym environment and the agent
-    env = gym.make('LunarLander-v2')
+    env = gym.make("LunarLander-v2")
     state_size = env.observation_space.shape[0]
     agent = DoubleDQNAgent(
-        state_size=state_size, action_size=env.action_space.n,
+        state_size=state_size,
+        action_size=env.action_space.n,
         learning_rate=0.001,
-        weight_file='app/lunar_lander/weights/DQNN_weights_2.h5')
+        weight_file="app/lunar_lander/weights/DQNN_weights_2.h5",
+    )
     time_reward = 0
 
     total_rewards = deque(maxlen=10)
@@ -56,6 +58,12 @@ if __name__ == "__main__":
         total_rewards.append(total_reward)
         print(
             "episode: {0:4d}/{1:4d}, time_t: {2:3d}, reward: {3:8.2f}, average reward: {4:8.2f}".format(
-                episode, EPISODES, time_t, total_reward, sum(total_rewards)/len(total_rewards)))
+                episode,
+                EPISODES,
+                time_t,
+                total_reward,
+                sum(total_rewards) / len(total_rewards),
+            )
+        )
 
     agent.save_weights()
