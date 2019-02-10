@@ -32,13 +32,13 @@ class QTablePolicy(QLearningPolicy):
         # Update Q-Table with new knowledge from last step
         self.Q[state, action] = (1 - self.learning_rate) * self.Q[
             state, action
-        ] + self.learning_rate * (reward + self.y * np.max(self.Q[result_state, :]))
+        ] + self.learning_rate * (reward + self.y * np.max(self.Q[next_state, :]))
 
     def get_action(self, state, attempt, **kwargs):
         # Choose an action by greedily (with noise) picking from Q table
         return np.argmax(
             self.Q[state, :]
-            + np.random.randn(1, self.num_actions) * (1.0 / (attempt + 1))
+            + np.random.randn(1, self.action_size) * (1.0 / (attempt + 1))
         )
 
 

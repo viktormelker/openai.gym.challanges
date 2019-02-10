@@ -1,6 +1,6 @@
 from app.mountain_car.environment import env
 from app.mountain_car.reward_functions import potential_function
-from app.policy import DoubleDQNAgent, DQNAgent, RandomPolicy
+from app.policies.q_learning import DoubleDQNAgent, DQNAgent, RandomPolicy
 
 
 state_size = env.observation_space.shape[0]

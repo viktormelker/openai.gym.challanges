@@ -1,4 +1,4 @@
-from app.policy import RandomPolicy
+from app.policies.q_learning import RandomPolicy
 
 
 class TestRandomPolicy:
