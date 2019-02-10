@@ -23,7 +23,7 @@ if __name__ == "__main__":
             if episode > 40:
                 env.render()
 
-            action = agent.act(state)
+            action = agent.get_action(state)
 
             next_state, reward, done, _ = env.step(action)
 
@@ -32,11 +32,8 @@ if __name__ == "__main__":
             positions.append(next_state[0, 0])
 
             # Remember the previous state, action, reward, and done
-            agent.remember(state, action, reward, next_state, done)
+            agent.update(state, action, reward, next_state, done)
             rewards.append(reward)
-
-            agent.replay()
-            agent.target_train()
 
             state = next_state
 
