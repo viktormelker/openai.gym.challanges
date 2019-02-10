@@ -82,6 +82,22 @@ class QTablePolicy(BasePolicy):
         )
 
 
+class RandomPolicy(BasePolicy):
+    def __init__(
+        self,
+        state_size,
+        action_size,
+    ):
+        self.state_size = state_size
+        self.action_size = action_size
+
+    def update(self, states, actions, reward, result_state, **kwargs):
+        pass
+
+    def get_action(self, state, attempt, **kwargs):
+        return np.argmax(np.random.randn(1, self.action_size))
+
+
 # Deep Q-learning Agent
 class DQNAgent:
     def __init__(
