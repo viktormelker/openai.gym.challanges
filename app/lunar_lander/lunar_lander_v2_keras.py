@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 
-from app.policy import DQNAgent
+from app.policies.q_learning import DQNAgent
 from collections import deque
 
 EPISODES = 20
@@ -26,7 +26,7 @@ if __name__ == "__main__":
             #    env.render()
 
             # Decide action
-            action = agent.act(state)
+            action = agent.get_action(state)
 
             next_state, reward, done, _ = env.step(action)
             # reward -= 0.2
@@ -35,13 +35,10 @@ if __name__ == "__main__":
 
             # Remember the previous state, action, reward, and done
             rewards.append(reward)
-            agent.remember(state, action, reward, next_state, done)
+            agent.update(state, action, reward, next_state, done)
 
             # make next_state the new current state for the next frame.
             state = next_state
-
-            # train the agent with the experience of the episode
-            agent.replay()
 
             # done becomes True when the game ends
             if done:
