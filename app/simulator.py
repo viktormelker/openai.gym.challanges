@@ -58,15 +58,19 @@ class QLearningSimulator:
 
                 if done:
                     self.on_episode_done()
-
                     break
+
+            self.on_episode_ended()
 
             if self.is_finished():
                 break
 
         self.on_training_finished()
 
-    def on_episode_finished(self):
+    def on_episode_done(self):
+        pass
+
+    def on_episode_ended(self):
         pass
 
     def is_finished(self):

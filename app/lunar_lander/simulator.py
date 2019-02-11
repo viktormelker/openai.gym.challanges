@@ -13,7 +13,7 @@ class LunarLanderSimulator(QLearningSimulator):
     def on_training_finished(self):
         self.policy.save_weights()
 
-    def on_episode_done(self):
+    def on_episode_ended(self):
         rewards = [data.reward for data in self.simulation_data]
         self.total_rewards.append(sum(rewards))
         average_total_reward = sum(self.total_rewards) / len(self.total_rewards)
