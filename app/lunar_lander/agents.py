@@ -8,8 +8,8 @@ state_size = env.observation_space.shape[0]
 ddqnAgent = DoubleDQNAgent(
     state_size=state_size,
     action_size=env.action_space.n,
-    learning_rate=0.001,
     weight_file="app/lunar_lander/weights/DQNN_weights_3.h5",
+    potential_function=potential_function,
 )
 
 # Deep Q learning
@@ -19,6 +19,7 @@ dqnAgent = DQNAgent(
     weight_file="app/lunar_lander/weights/DQN_weights_1.h5",
     gamma=0.98,
     potential_function=potential_function,
+    learning_rate=0.002,
 )
 
 random_policy = RandomPolicy(state_size=state_size, action_size=env.action_space.n)
