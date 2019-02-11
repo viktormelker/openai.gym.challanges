@@ -4,7 +4,7 @@ from app.simulator import QLearningSimulator
 
 
 class LunarLanderSimulator(QLearningSimulator):
-    total_rewards = deque(maxlen=20)
+    total_rewards = deque(maxlen=40)
 
     def __init__(self, target_average_reward, **kwargs):
         super().__init__(**kwargs)

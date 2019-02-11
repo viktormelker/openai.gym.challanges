@@ -10,7 +10,7 @@ if __name__ == "__main__":
         environment=env,
         state_size=state_size,
         render_gui=True,
-        num_episodes=50,
+        num_episodes=100,
         target_average_reward=100,
     )
 

@@ -4,7 +4,7 @@ from app.simulator import QLearningSimulator
 
 
 class MountainCarSimulator(QLearningSimulator):
-    best_positions = deque(maxlen=20)
+    best_positions = deque(maxlen=40)
 
     def __init__(self, success_x_pos, **kwargs):
         super().__init__(**kwargs)
