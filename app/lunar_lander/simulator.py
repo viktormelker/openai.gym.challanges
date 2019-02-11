@@ -23,7 +23,7 @@ class LunarLanderSimulator(QLearningSimulator):
                 self.episode,
                 self.num_episodes,
                 self.time_t,
-                self.total_reward,
+                self.total_rewards[-1],
                 average_total_reward,
             )
         )
