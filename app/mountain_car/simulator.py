@@ -38,3 +38,5 @@ class MountainCarSimulator(QLearningSimulator):
                 f"Successfully finished the challenge in {self.episode} training runs!"
             )
             return True
+        else:
+            return False
