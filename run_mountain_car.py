@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from app.mountain_car.agents import dqnAgent as policy
 from app.mountain_car.environment import env
 from app.mountain_car.simulator import MountainCarSimulator

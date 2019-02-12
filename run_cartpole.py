@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from app.cartpole.agents import dqnAgent as policy
 from app.cartpole.environment import env
 from app.cartpole.simulator import CartPoleSimulator

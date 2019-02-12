@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from app.lunar_lander.agents import dqnAgent as policy
 from app.lunar_lander.environment import env
 from app.lunar_lander.simulator import LunarLanderSimulator
