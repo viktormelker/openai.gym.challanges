@@ -52,7 +52,8 @@ class QLearningSimulator:
 
                 next_state = np.reshape(next_state, [1, self.state_size])
 
-                self.policy.update(state, action, reward, next_state, done)
+                self.policy.save_transition(state, action, reward, next_state, done)
+                self.policy.train()
 
                 state = next_state
 

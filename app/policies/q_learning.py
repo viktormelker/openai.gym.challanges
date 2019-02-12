@@ -3,7 +3,6 @@ import random
 from collections import deque
 
 import numpy as np
-
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import Adam
@@ -14,10 +13,13 @@ class QLearningPolicy:
         self.state_size = state_size
         self.action_size = action_size
 
-    def update(self, state, action, reward, next_state, done, **kwargs):
+    def save_transition(self, state, action, reward, next_state, done, **kwargs):
         raise NotImplementedError
 
     def get_action(self, state, **kwargs):
+        raise NotImplementedError
+
+    def train(self, **kwargs):
         raise NotImplementedError
 
 
@@ -28,8 +30,7 @@ class QTablePolicy(QLearningPolicy):
         self.y = 0.99
         self.learning_rate = 0.85
 
-    def update(self, state, action, reward, next_state, done, **kwargs):
-        # Update Q-Table with new knowledge from last step
+    def save_transition(self, state, action, reward, next_state, done, **kwargs):
         self.Q[state, action] = (1 - self.learning_rate) * self.Q[
             state, action
         ] + self.learning_rate * (reward + self.y * np.max(self.Q[next_state, :]))
@@ -41,17 +42,24 @@ class QTablePolicy(QLearningPolicy):
             + np.random.randn(1, self.action_size) * (1.0 / (attempt + 1))
         )
 
+    def train(self, **kwargs):
+        # training is automatically done in the save_transition step
+        pass
+
 
 class RandomPolicy(QLearningPolicy):
     def __init__(self, state_size, action_size):
         self.state_size = state_size
         self.action_size = action_size
 
-    def update(self, state, action, reward, next_state, done, **kwargs):
+    def save_transition(self, state, action, reward, next_state, done, **kwargs):
         pass
 
     def get_action(self, state, **kwargs):
         return np.argmax(np.random.randn(1, self.action_size))
+
+    def train(self, **kwargs):
+        pass
 
 
 # Deep Q-learning Agent
@@ -149,10 +157,12 @@ class DQNAgent(QLearningPolicy):
         else:
             print("Could not load weights from non-existing file: " + self.weight_file)
 
-    def update(self, state, action, reward, next_state, done, **kwargs):
+    def save_transition(self, state, action, reward, next_state, done, **kwargs):
         self._remember(
             state=state, action=action, reward=reward, next_state=next_state, done=done
         )
+
+    def train(self, **kwargs):
         self._replay(**kwargs)
 
 
@@ -195,9 +205,11 @@ class DoubleDQNAgent(DQNAgent):
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
-    def update(self, state, action, reward, next_state, done, **kwargs):
+    def save_transition(self, state, action, reward, next_state, done, **kwargs):
         self._remember(
             state=state, action=action, reward=reward, next_state=next_state, done=done
         )
-        self._target_train()
+
+    def train(self, **kwargs):
         self._replay(**kwargs)
+        self._target_train()
