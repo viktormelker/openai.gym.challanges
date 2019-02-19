@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="Openaisolver",
+    name="openai_solver",
     version="0.1.0",
     description="Openai Gym solver functions",
     url="https://github.com/viktormelker/openai.gym.challanges",
