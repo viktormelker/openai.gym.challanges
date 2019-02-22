@@ -5,12 +5,14 @@ This repository contains attempts to solve various challanges from https://gym.o
 Use python 3.6, because tensorflow does not work with 3.7
 
 ## Launch simulation
-I.e.
+Run any of the main files (`run_*.py`)
+
+For frozen lake there is no main file. run it as follows:
 ```sh
-python -m app.lunar_lander.lunar_lander_v2_keras
+python -m app.frozen_lake.frozen_lake_v0_keras
 ```
 
-## Running in docker
+### Running in docker
 To avoid having to set up [keras](https://keras.io/) and [tensorflow](https://www.tensorflow.org/) with dependencies the simulations can be run in docker (without GUI).
 
 To enter a shell in a docker image perform the following steps:
@@ -21,6 +23,8 @@ To enter a shell in a docker image perform the following steps:
 
 After this the simulations can be launched as normally.
 
+### Running in google cloud
+Write it
 
 ## Policies
 Several different policies are implemented in the [policy](app/policy.py). They all have different advantages.

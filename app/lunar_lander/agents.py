@@ -16,10 +16,10 @@ ddqnAgent = DoubleDQNAgent(
 dqnAgent = DQNAgent(
     state_size=state_size,
     action_size=env.action_space.n,
-    weight_file="app/lunar_lander/weights/DQN_weights_1.h5",
-    gamma=0.98,
+    weight_file="app/lunar_lander/weights/DQN_weights_2.h5",
+    gamma=0.99,
     potential_function=potential_function,
-    learning_rate=0.002,
+    learning_rate=0.02,
 )
 
 random_policy = RandomPolicy(state_size=state_size, action_size=env.action_space.n)
