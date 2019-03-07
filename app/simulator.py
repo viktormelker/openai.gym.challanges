@@ -1,7 +1,8 @@
 from collections import namedtuple
 
 import numpy as np
-from policies.q_learning import QLearningPolicy
+
+from app.policies.q_learning import QLearningPolicy
 
 SimulationData = namedtuple("SimulatonData", ["state", "next_state", "reward", "done"])
 

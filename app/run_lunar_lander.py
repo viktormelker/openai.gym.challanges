@@ -2,9 +2,9 @@
 
 import argparse
 
-from lunar_lander.agents import get_current_agent
-from lunar_lander.environment import env
-from lunar_lander.simulator import LunarLanderSimulator
+from app.lunar_lander.agents import get_current_agent
+from app.lunar_lander.environment import env
+from app.lunar_lander.simulator import LunarLanderSimulator
 
 
 def setup_parser():
@@ -14,7 +14,10 @@ def setup_parser():
         "--learning_rate", help="learning rate for", type=float, default=0.001
     )
     parser.add_argument(
-        "--job-dir", help="Output directory", type=str, default="./lunar_lander"
+        "--job-dir",
+        help="Output directory",
+        type=str,
+        default="app/lunar_lander/weights",
     )
     return parser
 
@@ -31,8 +34,8 @@ if __name__ == "__main__":
         policy=policy,
         environment=env,
         state_size=state_size,
-        render_gui=True,
-        num_episodes=100,
+        render_gui=False,
+        num_episodes=3,
         target_average_reward=100,
     )
 
