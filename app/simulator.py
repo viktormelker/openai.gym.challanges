@@ -1,6 +1,8 @@
+import os
 from collections import namedtuple
 
 import numpy as np
+from gym import wrappers
 
 from app.policies.q_learning import QLearningPolicy
 
@@ -30,7 +32,19 @@ class QLearningSimulator:
         self.num_episodes = num_episodes
         self.max_time = max_time
 
-    def simulate(self):
+    def simulate(self, config):
+        video_dir = os.path.join(config.job_dir, "video")
+
+        if config.record_video:
+            eval_interval = 2
+            self.environment = wrappers.Monitor(
+                self.environment,
+                video_dir,
+                video_callable=lambda ep: (ep + 1 - (ep + 1) / eval_interval)
+                % eval_interval
+                == 0,
+            )
+
         for self.episode in range(self.num_episodes):
             state = self.environment.reset()
             state = np.reshape(state, [1, self.state_size])

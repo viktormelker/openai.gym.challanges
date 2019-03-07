@@ -19,16 +19,22 @@ def setup_parser():
         type=str,
         default="app/lunar_lander/weights",
     )
+    parser.add_argument(
+        "--record-video",
+        help="whether to record video when testing",
+        action="store_true",
+    )
+
     return parser
 
 
 if __name__ == "__main__":
     parser = setup_parser()
-    args = parser.parse_args()
+    config = parser.parse_args()
 
     state_size = env.observation_space.shape[0]
 
-    policy = get_current_agent(**args.__dict__)
+    policy = get_current_agent(**config.__dict__)
 
     simulator = LunarLanderSimulator(
         policy=policy,
@@ -39,4 +45,4 @@ if __name__ == "__main__":
         target_average_reward=100,
     )
 
-    simulator.simulate()
+    simulator.simulate(config)

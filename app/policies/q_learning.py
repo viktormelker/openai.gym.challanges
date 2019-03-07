@@ -77,6 +77,7 @@ class DQNAgent(QLearningPolicy):
         weight_file=None,
         potential_function=lambda x: 0,
         job_dir=".",
+        **kwargs,
     ):
         self.state_size = state_size
         self.action_size = action_size
