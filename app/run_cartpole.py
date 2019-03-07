@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from app.cartpole.agents import dqnAgent as policy
-from app.cartpole.environment import env
-from app.cartpole.simulator import CartPoleSimulator
+from cartpole.agents import dqnAgent as policy
+from cartpole.environment import env
+from cartpole.simulator import CartPoleSimulator
 
 if __name__ == "__main__":
     state_size = env.observation_space.shape[0]

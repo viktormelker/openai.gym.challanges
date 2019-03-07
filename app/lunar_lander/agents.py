@@ -1,6 +1,6 @@
-from app.lunar_lander.environment import env
-from app.lunar_lander.reward_functions import potential_function
-from app.policies.q_learning import DoubleDQNAgent, DQNAgent, RandomPolicy
+from lunar_lander.environment import env
+from lunar_lander.reward_functions import potential_function
+from policies.q_learning import DoubleDQNAgent, DQNAgent, RandomPolicy
 
 state_size = env.observation_space.shape[0]
 

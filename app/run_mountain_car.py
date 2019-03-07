@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from app.mountain_car.agents import dqnAgent as policy
-from app.mountain_car.environment import env
-from app.mountain_car.simulator import MountainCarSimulator
+from mountain_car.agents import dqnAgent as policy
+from mountain_car.environment import env
+from mountain_car.simulator import MountainCarSimulator
 
 if __name__ == "__main__":
     state_size = env.observation_space.shape[0]

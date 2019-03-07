@@ -2,9 +2,9 @@
 
 import argparse
 
-from app.lunar_lander.agents import get_current_agent
-from app.lunar_lander.environment import env
-from app.lunar_lander.simulator import LunarLanderSimulator
+from lunar_lander.agents import get_current_agent
+from lunar_lander.environment import env
+from lunar_lander.simulator import LunarLanderSimulator
 
 
 def setup_parser():
