@@ -9,6 +9,6 @@ setup(
     author_email="",
     license="MIT",
     packages=find_packages(),
-    install_requires=["keras>=2.2.4", "h5py>=2.9.0"],
+    install_requires=["keras>=2.2.4", "h5py>=2.9.0", "gym>=0.10.9"],
     zip_safe=False,
 )
