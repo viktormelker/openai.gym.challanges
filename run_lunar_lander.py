@@ -1,11 +1,28 @@
 #!/usr/bin/env python3
 
-from app.lunar_lander.agents import dqnAgent as policy
+import argparse
+
+from app.lunar_lander.agents import get_current_agent
 from app.lunar_lander.environment import env
 from app.lunar_lander.simulator import LunarLanderSimulator
 
+
+def setup_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--gamma", help="discount rate for", type=float, default=0.95)
+    parser.add_argument(
+        "--learning_rate", help="learning rate for", type=float, default=0.001
+    )
+    return parser
+
+
 if __name__ == "__main__":
+    parser = setup_parser()
+    args = parser.parse_args()
+
     state_size = env.observation_space.shape[0]
+
+    policy = get_current_agent(**args.__dict__)
 
     simulator = LunarLanderSimulator(
         policy=policy,

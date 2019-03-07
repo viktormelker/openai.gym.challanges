@@ -1,0 +1,19 @@
+trainingInput:
+  scaleTier: BASIC_GPU
+  hyperparameters:
+    maxTrials: 40
+    maxParallelTrials: 5
+    enableTrialEarlyStopping: False
+    goal: MAXIMIZE
+    hyperparameterMetricTag: reward
+    params:
+    - parameterName: learning_rate
+      type: DOUBLE
+      minValue: 0.0001
+      maxValue: 0.001
+      scaleType: UNIT_LOG_SCALE
+    - parameterName: gamma
+      type: DOUBLE
+      minValue: 0.9
+      maxValue: 0.99
+      scaleType: UNIT_LOG_SCALE
