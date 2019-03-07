@@ -3,3 +3,5 @@
 black
 pre-commit
 flake8
+ipdb
+pep8

@@ -76,6 +76,7 @@ class DQNAgent(QLearningPolicy):
         model_file=None,
         weight_file=None,
         potential_function=lambda x: 0,
+        job_dir=".",
     ):
         self.state_size = state_size
         self.action_size = action_size
@@ -88,6 +89,7 @@ class DQNAgent(QLearningPolicy):
         self.model_file = model_file
         self.weight_file = weight_file
         self.potential_function = potential_function
+        self.job_dir = job_dir
 
         if self.model_file is None:
             self.model = self._build_model()
@@ -148,14 +150,22 @@ class DQNAgent(QLearningPolicy):
     def load_model(self):
         return None
 
+    def _get_path(self, filename):
+        return os.path.join(self.job_dir, filename)
+
     def save_weights(self):
-        print("Saved weights to file: " + self.weight_file)
-        self.model.save_weights(self.weight_file)
+        if not os.path.exists(self.job_dir):
+            os.makedirs(self.job_dir)
+
+        filename = self._get_path(self.weight_file)
+        print("Saved weights to file: " + filename)
+        self.model.save_weights(filename)
 
     def load_weights(self):
-        if os.path.exists(self.weight_file):
-            self.model.load_weights(self.weight_file)
-            print("Loaded weights from file: " + self.weight_file)
+        filename = self._get_path(self.weight_file)
+        if os.path.exists(filename):
+            self.model.load_weights(filename)
+            print("Loaded weights from file: " + filename)
         else:
             print("Could not load weights from non-existing file: " + self.weight_file)
 

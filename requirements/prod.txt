@@ -1,7 +1,3 @@
 gym
-tensorflow
-ipdb
-pep8
-flake8
 keras
 box2d-py
