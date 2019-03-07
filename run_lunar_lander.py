@@ -13,6 +13,9 @@ def setup_parser():
     parser.add_argument(
         "--learning_rate", help="learning rate for", type=float, default=0.001
     )
+    parser.add_argument(
+        "--job-dir", help="Output directory", type=str, default="./lunar_lander"
+    )
     return parser
 
 
