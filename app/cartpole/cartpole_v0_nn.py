@@ -158,7 +158,9 @@ with tf.Session() as sess:
                     else running_reward * 0.99 + reward_sum * 0.01
                 )
                 print(
-                    f"Average reward for episode {reward_sum/batch_size}.  Total average reward {running_reward/batch_size}."
+                    "Average reward for episode {}.  Total average reward {}.".format(
+                        reward_sum / batch_size, running_reward / batch_size
+                    )
                 )
 
                 if reward_sum / batch_size > 200:
@@ -169,4 +171,4 @@ with tf.Session() as sess:
 
             observation = env.reset()
 
-print(f"{episode_number} Episodes completed.")
+print("{} Episodes completed.".format(episode_number))

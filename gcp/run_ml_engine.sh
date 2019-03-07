@@ -9,9 +9,4 @@ gcloud ml-engine jobs submit training $JOBNAME \
         --staging-bucket=gs://$BUCKET \
         --config=gcp/hyperparameters.yaml \
         --runtime-version=1.10 \
-        --python-version=3.5 \
-        --\
-        --steps=10\
-        --start_train=10\
-        --buffer_size=10000\
-        --model_dir='gs://viktor_rl_test_bucket/rl_on_gcp'
+        --python-version=3.5

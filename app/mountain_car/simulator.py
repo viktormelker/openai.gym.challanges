@@ -35,7 +35,9 @@ class MountainCarSimulator(QLearningSimulator):
 
         if average_best_pos > self.success_x_pos:
             print(
-                f"Successfully finished the challenge in {self.episode} training runs!"
+                "Successfully finished the challenge in {} training runs!".format(
+                    self.episode
+                )
             )
             return True
         else:
