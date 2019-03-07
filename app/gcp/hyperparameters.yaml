@@ -4,8 +4,8 @@ trainingInput:
     maxTrials: 40
     maxParallelTrials: 5
     enableTrialEarlyStopping: False
-    goal: MAXIMIZE
-    hyperparameterMetricTag: reward
+    goal: MINIMIZE
+    hyperparameterMetricTag: mse
     params:
     - parameterName: learning_rate
       type: DOUBLE
