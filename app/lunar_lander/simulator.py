@@ -1,3 +1,4 @@
+import itertools
 from collections import deque
 
 from app.simulator import QLearningSimulator
@@ -34,13 +35,22 @@ class LunarLanderSimulator(QLearningSimulator):
 
         if average_total_reward > self.target_average_reward:
             print(
-                f"Successfully finished the challenge in {self.episode} training runs!"
+                "Successfully finished the challenge in {} training runs!".format(
+                    self.episode
+                )
             )
             return True
         else:
             return False
 
     def get_average_total_reward(self):
-        return sum(self.total_rewards[-self.averaging_length :]) / (
+        recent_rewards = list(
+            itertools.islice(
+                self.total_rewards,
+                max(0, len(self.total_rewards) - self.averaging_length),
+                None,
+            )
+        )
+        return sum(recent_rewards) / (
             min(len(self.total_rewards), self.averaging_length)
         )

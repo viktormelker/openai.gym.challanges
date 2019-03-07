@@ -1,8 +1,6 @@
-import os
 from collections import namedtuple
 
 import numpy as np
-from gym import wrappers
 
 from app.policies.q_learning import QLearningPolicy
 
