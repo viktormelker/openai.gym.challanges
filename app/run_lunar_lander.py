@@ -19,11 +19,6 @@ def setup_parser():
         type=str,
         default="app/lunar_lander/weights",
     )
-    parser.add_argument(
-        "--record-video",
-        help="whether to record video when testing",
-        action="store_true",
-    )
 
     return parser
 

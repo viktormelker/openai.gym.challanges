@@ -1,8 +1,8 @@
 trainingInput:
   scaleTier: BASIC_GPU
   hyperparameters:
-    maxTrials: 40
-    maxParallelTrials: 5
+    maxTrials: 12
+    maxParallelTrials: 2
     enableTrialEarlyStopping: False
     goal: MINIMIZE
     hyperparameterMetricTag: mse
