@@ -19,6 +19,7 @@ def setup_parser():
         type=str,
         default="app/lunar_lander/weights",
     )
+    parser.add_argument("--batch-size", help="mini-batch size", type=int, default=32)
 
     return parser
 

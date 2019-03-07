@@ -17,3 +17,10 @@ trainingInput:
       minValue: 0.9
       maxValue: 0.99
       scaleType: UNIT_LOG_SCALE
+    - parameterName: batch_size
+      type: DISCRETE
+      discreteValues:
+      - 8
+      - 32
+      - 128
+      - 512

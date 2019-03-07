@@ -77,6 +77,7 @@ class DQNAgent(QLearningPolicy):
         weight_file=None,
         potential_function=lambda x: 0,
         job_dir=".",
+        batch_size=32,
     ):
         self.state_size = state_size
         self.action_size = action_size
@@ -90,6 +91,7 @@ class DQNAgent(QLearningPolicy):
         self.weight_file = weight_file
         self.potential_function = potential_function
         self.job_dir = job_dir
+        self.batch_size = batch_size
 
         if self.model_file is None:
             self.model = self._build_model()
@@ -175,7 +177,7 @@ class DQNAgent(QLearningPolicy):
         )
 
     def train(self, **kwargs):
-        self._replay(**kwargs)
+        self._replay(batch_size=self.batch_size)
 
 
 class DoubleDQNAgent(DQNAgent):
@@ -223,5 +225,5 @@ class DoubleDQNAgent(DQNAgent):
         )
 
     def train(self, **kwargs):
-        self._replay(**kwargs)
+        self._replay(batch_size=self.batch_size)
         self._target_train()
